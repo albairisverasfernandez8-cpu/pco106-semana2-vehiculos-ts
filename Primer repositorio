@@ -1,0 +1,82 @@
+abstract class Vehiculo {
+  private _precio: number;
+  private _vendido: boolean = false;
+
+  constructor(
+    public readonly marca: string,
+    public readonly modelo: string,
+    public readonly anio: number,
+    precio: number
+  ) {
+    this._precio = precio;
+  }
+
+  get precio(): number {
+    return this._precio;
+  }
+
+  get vendido(): boolean {
+    return this._vendido;
+  }
+
+  aplicarDescuento(porcentaje: number): void {
+    if (porcentaje < 0 || porcentaje > 50) {
+      throw new Error("Descuento inválido");
+    }
+    this._precio = this._precio - (this._precio * porcentaje) / 100;
+  }
+
+  marcarVendido(): void {
+    this._vendido = true;
+  }
+
+  protected descripcionBase(): string {
+    return `${this.marca} ${this.modelo} (${this.anio})`;
+  }
+
+  abstract describir(): string;
+}
+
+class Carro extends Vehiculo {
+  constructor(
+    marca: string,
+    modelo: string,
+    anio: number,
+    public readonly puertas: number,
+    precio: number
+  ) {
+    super(marca, modelo, anio, precio);
+  }
+
+  describir(): string {
+    return `${this.descripcionBase()} - ${this.puertas} puertas`;
+  }
+}
+
+class Moto extends Vehiculo {
+  constructor(
+    marca: string,
+    modelo: string,
+    anio: number,
+    public readonly cilindrada: number,
+    precio: number
+  ) {
+    super(marca, modelo, anio, precio);
+  }
+
+  describir(): string {
+    return `${this.descripcionBase()} - ${this.cilindrada}cc`;
+  }
+}
+
+const carro1 = new Carro("Toyota", "Corolla", 2023, 4, 850000);
+const moto1 = new Moto("Honda", "CBR500", 2022, 500, 420000);
+
+console.log(carro1.describir());
+console.log(moto1.describir());
+
+carro1.aplicarDescuento(10);
+moto1.marcarVendido();
+
+console.log(carro1.precio); // 765000
+console.log(moto1.vendido); // true
